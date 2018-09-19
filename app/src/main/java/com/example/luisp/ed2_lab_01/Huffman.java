@@ -132,18 +132,18 @@ public class Huffman {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void serializeTree(HuffmanNode node) throws FileNotFoundException, IOException {
         final BitSet bitSet = new BitSet();
-        boolean exist = true;
-        if (exist){
-            File nuevaCarpeta;
-            nuevaCarpeta = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Android/data", "/MisCompresiones");
-            nuevaCarpeta.mkdirs();
-            exist = false;
+
+        File nuevaCarpeta;
+        nuevaCarpeta = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) , "/MisCompresiones");
+        if (!nuevaCarpeta.exists()){
+
+              nuevaCarpeta.mkdirs();
         }
 
         File f;
         File j;
-        f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/MisCompresiones","Compresion.txt");
-        j = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/MisCompresiones","Char.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Compresion.txt");
+        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Char.txt");
         try (ObjectOutputStream oosTree = new ObjectOutputStream(new FileOutputStream(f))) {
             try (ObjectOutputStream oosChar = new ObjectOutputStream(new FileOutputStream(j))) {
                 IntObject o = new IntObject();
@@ -176,22 +176,11 @@ public class Huffman {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void serializeMessage(String message) throws IOException {
         final BitSet bitSet = getBitSet(message);
-
-        /*try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("encodedMessage"))){
+        File f;
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.txt");
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))){
 
             oos.writeObject(bitSet);
-        }*/
-
-        try{
-
-
-            File f;
-            f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "encodedMessage.txt");
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
-            oos.writeObject(bitSet);
-            oos.close();
-        }catch (IOException e){
-            e.printStackTrace();
         }
     }
 
@@ -222,8 +211,8 @@ public class Huffman {
 
         File f;
         File j;
-        f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "tree.txt");
-        j = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "Char.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "tree.txt");
+        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "Char.txt");
         try (ObjectInputStream oisBranch = new ObjectInputStream(new FileInputStream(f))) {
             try (ObjectInputStream oisChar = new ObjectInputStream(new FileInputStream(j))) {
                 final BitSet bitSet = (BitSet) oisBranch.readObject();
@@ -256,7 +245,9 @@ public class Huffman {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String decodeMessage(HuffmanNode node) throws FileNotFoundException, IOException, ClassNotFoundException {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream("/Users/ameya.patil/Desktop/encodedMessage"))) {
+        File f;
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.txt");
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
             final BitSet bitSet = (BitSet) ois.readObject();
             final StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < (bitSet.length() - 1);) {
