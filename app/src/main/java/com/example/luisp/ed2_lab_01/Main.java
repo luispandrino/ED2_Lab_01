@@ -57,7 +57,10 @@ public class Main extends AppCompatActivity {
             public void onClick(View v) {
                 try {
                     Huffman.compress(texto);
+                    Huffman.expand();
                 } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
 

@@ -142,7 +142,7 @@ public class Huffman {
 
         File f;
         File j;
-        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Compresion.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","tree.txt");
         j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Char.txt");
         try (ObjectOutputStream oosTree = new ObjectOutputStream(new FileOutputStream(f))) {
             try (ObjectOutputStream oosChar = new ObjectOutputStream(new FileOutputStream(j))) {
