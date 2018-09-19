@@ -18,7 +18,7 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-public final class Huffman {
+public class Huffman {
 
     private Huffman() {}
 
@@ -178,7 +178,7 @@ public final class Huffman {
                 bitSet.set(i, true);
             }
         }
-        bitSet.set(i, true); // dummy bit set to know the length
+        bitSet.set(i, true); // bit para saber el tamaño
         return bitSet;
     }
 
@@ -188,7 +188,7 @@ public final class Huffman {
         final HuffmanNode root = deserializeTree();
         return decodeMessage(root);
     }
-
+///////////////////////////------------------------> Aqui guardo el archivo
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static HuffmanNode deserializeTree() throws FileNotFoundException, IOException, ClassNotFoundException {

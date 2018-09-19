@@ -1,7 +1,10 @@
 package com.example.luisp.ed2_lab_01;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -44,51 +47,15 @@ public class Main extends AppCompatActivity {
         });
 
         btnCod.setOnClickListener(new View.OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.KITKAT)
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onClick(View v) {
-                char[] msgChar = texto.toCharArray();
-                ArrayList<Character> characters = new ArrayList<Character>();
-
-                for (int i = 0; i < msgChar.length; i++){
-                    if (!(characters.contains(msgChar[i]))){
-                        characters.add(msgChar[i]);
-
-                    }
+                try {
+                    Huffman.compress(texto);
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-
-                int[]countChars= new int[characters.size()];
-                for (int x = 0; x<countChars.length;x++){
-                    countChars[x]=0;
-                }
-
-                for (int i= 0; i < characters.size(); i++){
-                    char checker = characters.get(i);
-                    for (int x = 0; x < msgChar.length ; x++){
-                        if (checker == msgChar[x]){
-                            countChars[i]++;
-                        }
-                    }
-                }
-
-                for (int i = 0; i < countChars.length - 1; i++) {
-                    for (int j = 0; j < countChars.length - 1; j++) {
-                        if (countChars[j] < countChars[j + 1]) {
-                            int temp = countChars[j];
-                            countChars[j] = countChars[j + 1];
-                            countChars[j + 1] = temp;
-
-                            char tempChar = characters.get(j);
-                            characters.set(j, characters.get(j + 1));
-                            characters.set(j + 1, tempChar);
-                        }
-                    }
-                }
-                for (int i = 0; i < characters.size(); i++ ){
-                    AUX = AUX + characters.get(i) + "---->" + countChars[i] + "\n";
-                }
-
-
-
 
             }
         });
