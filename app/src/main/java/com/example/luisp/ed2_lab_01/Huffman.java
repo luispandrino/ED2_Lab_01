@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.annotation.RequiresApi;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
+import java.nio.file.Files;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -38,6 +41,14 @@ public class Huffman {
             this.right = right;
         }
     }
+    private static Integer SizeFile;
+    private static String  File;
+
+    public static Integer FileCompress(){
+        SizeFile = File.getBytes().length;
+        return  SizeFile;
+
+    }
 
     private static class HuffManComparator implements Comparator <HuffmanNode> {
         @Override
@@ -61,6 +72,7 @@ public class Huffman {
         final String encodedMessage = encodeMessage(charCode, sentence);
         serializeTree(root);
         serializeMessage(encodedMessage);
+
     }
 
     private static Map<Character, Integer> getCharFrequency(String sentence) {
@@ -126,6 +138,7 @@ public class Huffman {
         for (int i = 0; i < sentence.length(); i++) {
             stringBuilder.append(charCode.get(sentence.charAt(i)));
         }
+        File = stringBuilder.toString();
         return stringBuilder.toString();
     }
 
@@ -142,8 +155,8 @@ public class Huffman {
 
         File f;
         File j;
-        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","tree.txt");
-        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Char.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","tree.huff");
+        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","Char.huff");
         try (ObjectOutputStream oosTree = new ObjectOutputStream(new FileOutputStream(f))) {
             try (ObjectOutputStream oosChar = new ObjectOutputStream(new FileOutputStream(j))) {
                 IntObject o = new IntObject();
@@ -161,15 +174,15 @@ public class Huffman {
 
     private static void preOrder(HuffmanNode node, ObjectOutputStream oosChar, BitSet bitSet, IntObject intObject) throws IOException {
         if (node.left == null && node.right == null) {
-            bitSet.set(intObject.bitPosition++, false);  // register branch in bitset
+            bitSet.set(intObject.bitPosition++, false);
             oosChar.writeChar(node.ch);
-            return;                                  // DONT take the branch.
+            return;
         }
-        bitSet.set(intObject.bitPosition++, true);           // register branch in bitset
-        preOrder(node.left, oosChar, bitSet, intObject); // take the branch.
+        bitSet.set(intObject.bitPosition++, true);
+        preOrder(node.left, oosChar, bitSet, intObject);
 
-        bitSet.set(intObject.bitPosition++, true);               // register branch in bitset
-        preOrder(node.right, oosChar, bitSet, intObject);    // take the branch.
+        bitSet.set(intObject.bitPosition++, true);
+        preOrder(node.right, oosChar, bitSet, intObject);
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
@@ -177,7 +190,7 @@ public class Huffman {
     private static void serializeMessage(String message) throws IOException {
         final BitSet bitSet = getBitSet(message);
         File f;
-        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.huff");
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f))){
 
             oos.writeObject(bitSet);
@@ -204,7 +217,7 @@ public class Huffman {
         final HuffmanNode root = deserializeTree();
         return decodeMessage(root);
     }
-///////////////////////////------------------------> Aqui guardo el archivo
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static HuffmanNode deserializeTree() throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -223,20 +236,20 @@ public class Huffman {
 
 
     private static HuffmanNode preOrder(BitSet bitSet, ObjectInputStream oisChar, IntObject o) throws IOException {
-        // created the node before reading whats registered.
+
         final HuffmanNode node = new HuffmanNode('\0', 0, null, null);
 
-        // reading whats registered and determining if created node is the leaf or non-leaf.
+
         if (!bitSet.get(o.bitPosition)) {
-            o.bitPosition++;              // feed the next position to the next stack frame by doing computation before preOrder is called.
+            o.bitPosition++;
             node.ch = oisChar.readChar();
             return node;
         }
 
-        o.bitPosition = o.bitPosition + 1;  // feed the next position to the next stack frame by doing computation before preOrder is called.
+        o.bitPosition = o.bitPosition + 1;
         node.left = preOrder(bitSet, oisChar, o);
 
-        o.bitPosition = o.bitPosition + 1; // feed the next position to the next stack frame by doing computation before preOrder is called.
+        o.bitPosition = o.bitPosition + 1;
         node.right = preOrder(bitSet, oisChar, o);
 
         return node;
@@ -252,7 +265,7 @@ public class Huffman {
             final StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < (bitSet.length() - 1);) {
                 HuffmanNode temp = node;
-                // since huffman code generates full binary tree, temp.right is certainly null if temp.left is null.
+
                 while (temp.left != null) {
                     if (!bitSet.get(i)) {
                         temp = temp.left;

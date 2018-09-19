@@ -2,33 +2,54 @@ package com.example.luisp.ed2_lab_01;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main extends AppCompatActivity {
 
     private Button btnUpload;
     private Button btnCod;
     private EditText txt;
+    private ListView list;
+    private ArrayList<String> Lista;
+    private ArrayAdapter<String> adapter;
     String texto = "";
     String AUX = "";
+    String Name = "";
+    Integer tamaño;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +59,11 @@ public class Main extends AppCompatActivity {
 
         btnUpload = (Button)findViewById(R.id.btnSubir);
         btnCod = (Button) findViewById(R.id.btnCodificar);
+        list = (ListView) findViewById(R.id.lstMComp);
+        Lista = new ArrayList<String>();
+
+        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.custom, Lista);
+        list.setAdapter(adapter);
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,8 +82,14 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+
                     Huffman.compress(texto);
                     Huffman.expand();
+                    Double Razon = (double)Huffman.FileCompress() / tamaño;
+                    Double Factor = (double)tamaño/Huffman.FileCompress();
+                    String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
+                    Lista.add(Name+"/n"+NombreCod+" "+"/n"+ "Razon de Compresion---->" + Razon.toString() +"/n"+ "Razon de Compresion---->" + Factor.toString() );
+                    adapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -110,17 +142,25 @@ public class Main extends AppCompatActivity {
             Toast.makeText(this,selectedFile.toString(),Toast.LENGTH_LONG).show();
             Toast.makeText(this,selectedFile.getPath(),Toast.LENGTH_LONG).show();
 
+
+
             try{
+
+
                 ReadText(selectedFile);
                 texto = ReadText(selectedFile);
+                tamaño =  texto.getBytes().length;
+
 
             }catch (IOException e)
             {
                 Toast.makeText(this,"Error",Toast.LENGTH_LONG).show();
+                e.printStackTrace();
             }
         }
 
     }
+
 
 
 
