@@ -2,14 +2,17 @@ package com.example.luisp.ed2_lab_01;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Environment;
 import android.support.annotation.RequiresApi;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.BitSet;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -129,8 +132,20 @@ public class Huffman {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static void serializeTree(HuffmanNode node) throws FileNotFoundException, IOException {
         final BitSet bitSet = new BitSet();
-        try (ObjectOutputStream oosTree = new ObjectOutputStream(new FileOutputStream("/Users/ap/Desktop/tree"))) {
-            try (ObjectOutputStream oosChar = new ObjectOutputStream(new FileOutputStream("/Users/ap/Desktop/char"))) {
+        boolean exist = true;
+        if (exist){
+            File nuevaCarpeta;
+            nuevaCarpeta = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Android/data", "/MisCompresiones");
+            nuevaCarpeta.mkdirs();
+            exist = false;
+        }
+
+        File f;
+        File j;
+        f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/MisCompresiones","Compresion.txt");
+        j = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "/Android/data/MisCompresiones","Char.txt");
+        try (ObjectOutputStream oosTree = new ObjectOutputStream(new FileOutputStream(f))) {
+            try (ObjectOutputStream oosChar = new ObjectOutputStream(new FileOutputStream(j))) {
                 IntObject o = new IntObject();
                 preOrder(node, oosChar, bitSet, o);
                 bitSet.set(o.bitPosition, true);
@@ -162,9 +177,21 @@ public class Huffman {
     private static void serializeMessage(String message) throws IOException {
         final BitSet bitSet = getBitSet(message);
 
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("/Users/ap/Desktop/encodedMessage"))){
+        /*try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("encodedMessage"))){
 
             oos.writeObject(bitSet);
+        }*/
+
+        try{
+
+
+            File f;
+            f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "encodedMessage.txt");
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
+            oos.writeObject(bitSet);
+            oos.close();
+        }catch (IOException e){
+            e.printStackTrace();
         }
     }
 
@@ -192,8 +219,13 @@ public class Huffman {
     @TargetApi(Build.VERSION_CODES.KITKAT)
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static HuffmanNode deserializeTree() throws FileNotFoundException, IOException, ClassNotFoundException {
-        try (ObjectInputStream oisBranch = new ObjectInputStream(new FileInputStream("/Users/ap/Desktop/tree"))) {
-            try (ObjectInputStream oisChar = new ObjectInputStream(new FileInputStream("/Users/ap/Desktop/char"))) {
+
+        File f;
+        File j;
+        f = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "tree.txt");
+        j = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ "MisCompresiones", "Char.txt");
+        try (ObjectInputStream oisBranch = new ObjectInputStream(new FileInputStream(f))) {
+            try (ObjectInputStream oisChar = new ObjectInputStream(new FileInputStream(j))) {
                 final BitSet bitSet = (BitSet) oisBranch.readObject();
                 return preOrder(bitSet, oisChar, new IntObject());
             }
