@@ -2,7 +2,9 @@ package com.example.luisp.ed2_lab_01;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -25,8 +27,10 @@ import android.widget.Toast;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -85,6 +89,17 @@ public class Main extends AppCompatActivity {
 
                     Huffman.compress(texto);
                     Huffman.expand();
+                    File F = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","decode.txt");
+                    BufferedWriter bw;
+                    try {
+                        FileWriter fw = new FileWriter(F);
+                        bw = new BufferedWriter(fw);
+                        bw.write(Huffman.expand());
+                        bw.close();
+                        Dialog();
+                    }catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
                     Double Razon = (double)Huffman.FileCompress() / tamaño;
                     Double Factor = (double)tamaño/Huffman.FileCompress();
                     String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
@@ -101,6 +116,19 @@ public class Main extends AppCompatActivity {
         });
 
         RequestPermission();
+    }
+
+    public void Dialog(){
+        new AlertDialog.Builder(this)
+                .setTitle("Información")
+                .setMessage("La codificación se realizo con exito el archivo se encuentra en la Carpeta descargas")
+                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+
+                    }
+                }).create().show();
     }
 
     public void RequestPermission(){
