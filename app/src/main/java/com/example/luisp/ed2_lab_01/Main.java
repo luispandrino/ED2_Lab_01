@@ -88,7 +88,8 @@ public class Main extends AppCompatActivity {
                     Double Razon = (double)Huffman.FileCompress() / tamaño;
                     Double Factor = (double)tamaño/Huffman.FileCompress();
                     String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
-                    Lista.add(Name+"/n"+NombreCod+" "+"/n"+ "Razon de Compresion---->" + Razon.toString() +"/n"+ "Razon de Compresion---->" + Factor.toString() );
+                    String Aux ="Nombre Archivo :" + Name+"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
+                    Lista.add(Aux);
                     adapter.notifyDataSetChanged();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -150,6 +151,7 @@ public class Main extends AppCompatActivity {
                 ReadText(selectedFile);
                 texto = ReadText(selectedFile);
                 tamaño =  texto.getBytes().length;
+                Name = selectedFile.getPath();
 
 
             }catch (IOException e)
