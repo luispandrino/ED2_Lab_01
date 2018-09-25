@@ -224,8 +224,8 @@ public class Huffman {
 
         File f;
         File j;
-        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "tree.txt");
-        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "Char.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "tree.huff");
+        j = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "Char.huff");
         try (ObjectInputStream oisBranch = new ObjectInputStream(new FileInputStream(f))) {
             try (ObjectInputStream oisChar = new ObjectInputStream(new FileInputStream(j))) {
                 final BitSet bitSet = (BitSet) oisBranch.readObject();
@@ -259,7 +259,7 @@ public class Huffman {
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private static String decodeMessage(HuffmanNode node) throws FileNotFoundException, IOException, ClassNotFoundException {
         File f;
-        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.txt");
+        f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones", "encodedMessage.huff");
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f))) {
             final BitSet bitSet = (BitSet) ois.readObject();
             final StringBuilder stringBuilder = new StringBuilder();

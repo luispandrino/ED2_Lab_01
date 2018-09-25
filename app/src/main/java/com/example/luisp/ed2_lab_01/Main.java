@@ -23,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import java.io.BufferedInputStream;
@@ -45,9 +46,8 @@ public class Main extends AppCompatActivity {
     private Button btnUpload;
     private Button btnCod;
     private EditText txt;
-    private ListView list;
-    private ArrayList<String> Lista;
-    private ArrayAdapter<String> adapter;
+    private RadioButton lzw;
+    private RadioButton Huff;
     String texto = "";
     String AUX = "";
     String Name = "";
@@ -63,11 +63,9 @@ public class Main extends AppCompatActivity {
 
         btnUpload = (Button)findViewById(R.id.btnSubir);
         btnCod = (Button) findViewById(R.id.btnCodificar);
-        list = (ListView) findViewById(R.id.lstMComp);
-        Lista = new ArrayList<String>();
+        lzw = (RadioButton) findViewById(R.id.LZW);
+        Huff = (RadioButton) findViewById(R.id.Huffman);
 
-        adapter = new ArrayAdapter<String>(getApplicationContext(),R.layout.custom, Lista);
-        list.setAdapter(adapter);
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,26 +84,32 @@ public class Main extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 try {
+                    if (Huff.isChecked()){
+                        Huffman.compress(texto);
+                        Huffman.expand();
+                        File F = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","decode.txt");
+                        BufferedWriter bw;
+                        try {
+                            FileWriter fw = new FileWriter(F);
+                            bw = new BufferedWriter(fw);
+                            bw.write(Huffman.expand());
+                            bw.close();
+                            Dialog();
+                        }catch (IOException ioe) {
+                            ioe.printStackTrace();
+                        }
+                        Double Razon = (double)Huffman.FileCompress() / tamaño;
+                        Double Factor = (double)tamaño/Huffman.FileCompress();
+                        String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
+                        String Aux ="Nombre Archivo :" + Name+"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
+                    }else if (lzw.isChecked()){
+                        LZW.Encode_string(texto,texto.getBytes().length);
 
-                    Huffman.compress(texto);
-                    Huffman.expand();
-                    File F = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones","decode.txt");
-                    BufferedWriter bw;
-                    try {
-                        FileWriter fw = new FileWriter(F);
-                        bw = new BufferedWriter(fw);
-                        bw.write(Huffman.expand());
-                        bw.close();
-                        Dialog();
-                    }catch (IOException ioe) {
-                        ioe.printStackTrace();
+                    }else{
+                        Error();
                     }
-                    Double Razon = (double)Huffman.FileCompress() / tamaño;
-                    Double Factor = (double)tamaño/Huffman.FileCompress();
-                    String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
-                    String Aux ="Nombre Archivo :" + Name+"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
-                    Lista.add(Aux);
-                    adapter.notifyDataSetChanged();
+
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 } catch (ClassNotFoundException e) {
@@ -116,6 +120,10 @@ public class Main extends AppCompatActivity {
         });
 
         RequestPermission();
+    }
+
+    public void Error(){
+        Toast.makeText(this,"Seleccione una de las dos opciones antes de codificar / decodificar",Toast.LENGTH_LONG).show();
     }
 
     public void Dialog(){
@@ -179,7 +187,7 @@ public class Main extends AppCompatActivity {
                 ReadText(selectedFile);
                 texto = ReadText(selectedFile);
                 tamaño =  texto.getBytes().length;
-                Name = selectedFile.getPath();
+                Name = selectedFile.getLastPathSegment();
 
 
             }catch (IOException e)
