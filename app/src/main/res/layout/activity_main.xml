@@ -8,67 +8,47 @@
 
     <Button
         android:id="@+id/btnSubir"
-        android:layout_width="361dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="363dp"
+        android:layout_height="68dp"
         android:text="Subir Archivo"
-        app:layout_constraintBottom_toTopOf="@+id/btnCodificar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:layout_editor_absoluteX="12dp"
+        tools:layout_editor_absoluteY="16dp" />
 
     <Button
         android:id="@+id/btnCodificar"
-        android:layout_width="361dp"
-        android:layout_height="99dp"
-        android:layout_marginBottom="319dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="7dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="15dp"
+        android:layout_width="363dp"
+        android:layout_height="68dp"
         android:text="Codificar"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSubir" />
+        tools:layout_editor_absoluteX="12dp"
+        tools:layout_editor_absoluteY="269dp" />
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginEnd="93dp"
-        android:layout_marginLeft="94dp"
-        android:layout_marginRight="93dp"
-        android:layout_marginStart="94dp"
-        android:layout_marginTop="16dp"
-        android:text="Mis Compresiones"
-        android:textAppearance="@style/TextAppearance.AppCompat.Headline"
-        app:layout_constraintBottom_toTopOf="@+id/lstMComp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCodificar" />
+    <RadioGroup
+        android:layout_width="285dp"
+        android:layout_height="116dp"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="113dp">
 
-    <ListView
-        android:id="@+id/lstMComp"
-        android:layout_width="344dp"
-        android:layout_height="228dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.545"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Huffman" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="LZW" />
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/BtnDecodificar"
+        android:layout_width="363dp"
+        android:layout_height="68dp"
+        android:text="Decodificar"
+        tools:layout_editor_absoluteX="13dp"
+        tools:layout_editor_absoluteY="350dp" />
 
 </android.support.constraint.ConstraintLayout>
