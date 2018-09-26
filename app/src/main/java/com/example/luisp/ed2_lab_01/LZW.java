@@ -19,6 +19,12 @@ public class LZW {
     private static String File_Input = null;
     private static double MAX_TABLE_SIZE; //Max Table size is based on the bit length input.
     private static String LZWfilename;
+    private static Integer FileSize;
+
+    public static Double Tamaño(){
+        return (double)FileSize;
+
+    }
 
     public static void Encode_string(String input_string, double Bit_Length) throws IOException {
 
@@ -86,6 +92,7 @@ public class LZW {
 
         out.flush();
         out.close();
+        FileSize = (int)F.length();
     }
 
     public static void Decode_String(String file_Input2, double bit_Length) throws IOException {

@@ -49,10 +49,16 @@ public class Main extends AppCompatActivity {
     private RadioButton lzw;
     private RadioButton Huff;
     private Button btnDecod;
+    private Button btnPass;
+
     String texto = "";
     String AUX = "";
     String Name = "";
     Integer tamaño;
+    Double Razon;
+    Double Factor;
+    String NombreCod;
+    String Aux;
 
 
 
@@ -67,6 +73,8 @@ public class Main extends AppCompatActivity {
         lzw = (RadioButton) findViewById(R.id.LZW);
         Huff = (RadioButton) findViewById(R.id.Huffman);
         btnDecod = (Button) findViewById(R.id.BtnDecodificar);
+        btnPass = (Button) findViewById(R.id.btnComp);
+
 
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +85,18 @@ public class Main extends AppCompatActivity {
                         .setType("*/*")
                         .setAction(Intent.ACTION_OPEN_DOCUMENT);
                 startActivityForResult(Intent.createChooser(intent,"Seleccione un Archivo"),123);
+            }
+        });
+
+        btnPass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Main.this,Mis_Comp.class);
+                i.putExtra("Razon",Razon);
+                i.putExtra("Factor",Factor);
+                i.putExtra("Nombre_Codifcado", NombreCod);
+                i.putExtra("Resultado",Aux);
+                startActivity(i);
             }
         });
 
@@ -100,13 +120,17 @@ public class Main extends AppCompatActivity {
                         }catch (IOException ioe) {
                             ioe.printStackTrace();
                         }
-                        Double Razon = (double)Huffman.FileCompress() / tamaño;
-                        Double Factor = (double)tamaño/Huffman.FileCompress();
-                        String NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
-                        String Aux ="Nombre Archivo :" + Name+"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
+                         Razon = (double)Huffman.FileCompress() / tamaño;
+                         Factor = (double)tamaño/Huffman.FileCompress();
+                         NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones"+ "encodedMessage.huff";
+                         Aux ="Nombre Archivo :" + Name +"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
                     }else if (lzw.isChecked()){
                         LZW.Encode_string(texto,texto.getBytes().length);
                         Termino();
+                        Razon = (double)LZW.Tamaño()/ tamaño;
+                        Factor = (double)tamaño/LZW.Tamaño();
+                        NombreCod = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + "/MisCompresiones/"+ "codelzw.lzw.";
+                        Aux ="Nombre Archivo :" + Name +"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
 
                     }else{
                         Error();
@@ -128,7 +152,7 @@ public class Main extends AppCompatActivity {
                 try{
                     if (lzw.isChecked()){
                         String fullPath;
-                        fullPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + Name.substring(Name.indexOf("/"),Name.indexOf("."))+".txt";
+                        fullPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + Name.substring(Name.indexOf("/"));
                         LZW.Decode_String(fullPath,texto.getBytes().length);
                         Termino();
 
