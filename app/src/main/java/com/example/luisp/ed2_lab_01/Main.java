@@ -48,6 +48,7 @@ public class Main extends AppCompatActivity {
     private EditText txt;
     private RadioButton lzw;
     private RadioButton Huff;
+    private Button btnDecod;
     String texto = "";
     String AUX = "";
     String Name = "";
@@ -65,6 +66,7 @@ public class Main extends AppCompatActivity {
         btnCod = (Button) findViewById(R.id.btnCodificar);
         lzw = (RadioButton) findViewById(R.id.LZW);
         Huff = (RadioButton) findViewById(R.id.Huffman);
+        btnDecod = (Button) findViewById(R.id.BtnDecodificar);
 
 
         btnUpload.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +106,7 @@ public class Main extends AppCompatActivity {
                         String Aux ="Nombre Archivo :" + Name+"\n"+" Path Archivo Codificado : "+NombreCod+" "+ "\n Razon de Compresion---->" + Razon.toString() +"\n"+ "Razon de Compresion---->" + Factor.toString();
                     }else if (lzw.isChecked()){
                         LZW.Encode_string(texto,texto.getBytes().length);
+                        Termino();
 
                     }else{
                         Error();
@@ -119,11 +122,35 @@ public class Main extends AppCompatActivity {
             }
         });
 
+        btnDecod.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    if (lzw.isChecked()){
+                        String fullPath;
+                        fullPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + Name.substring(Name.indexOf("/"),Name.indexOf("."))+".txt";
+                        LZW.Decode_String(fullPath,texto.getBytes().length);
+                        Termino();
+
+                    }else if (Huff.isChecked()){
+                        Dialog();
+                    }else{
+                        Error();
+                    }
+                }catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         RequestPermission();
     }
 
     public void Error(){
         Toast.makeText(this,"Seleccione una de las dos opciones antes de codificar / decodificar",Toast.LENGTH_LONG).show();
+    }
+    public void Termino(){
+        Toast.makeText(this,"Proceso finalizado con exito",Toast.LENGTH_LONG).show();
     }
 
     public void Dialog(){
